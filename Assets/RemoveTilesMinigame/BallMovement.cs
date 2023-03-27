@@ -23,16 +23,18 @@ public class BallMovement : MonoBehaviour
         if (!touchWasActive && Input.touchCount > 0)
         {
             touchWasActive = true;
-            rb.AddForce(new Vector2(0, speed * Time.deltaTime));
+            rb.velocity = Vector2.down * speed;
         }
-        lastVelocity = rb.velocity;
+        if(rb.velocity.magnitude > speed)
+        {
+            rb.velocity = Vector3.ClampMagnitude(rb.velocity, speed); 
+        }
     }
 
     void OnCollisionEnter2D(Collision2D collision2D)
     {
-        float speed = lastVelocity.magnitude;
-        var direction = Vector3.Reflect(lastVelocity.normalized, collision2D.contacts[0].normal);
-        rb.velocity = direction * Mathf.Max(speed, 0f);
+        // float speed = lastVelocity.magnitude;
+        // var direction = Vector3.Reflect(lastVelocity.normalized, collision2D.contacts[0].normal);
         if (collision2D.collider.gameObject.name.Contains("Tile"))
         {
             collision2D.collider.gameObject.SetActive(false);
